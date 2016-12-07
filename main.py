@@ -1,5 +1,5 @@
-from datetime import date, timedelta
-import simplejson as json
+from datetime import datetime, date, timedelta
+import json
 import sys
 
 START_DATE = date(2016, 1, 1)
@@ -31,13 +31,13 @@ def run():
         print income
 
 
-def dates_from_sechedule(event, max_date=END_DATE.isoformat()):
+def dates_from_sechedule(event, max_date=END_DATE):
     dates = []
     schedule = event['schedule']
-    start = schedule['start'] or START_DATE.isoformat()
+    start = schedule['start'] or date_to_string(START_DATE)
 
     if schedule['type'] == 'onTime':
-        dates.append(schedule['start'])
+        dates.append(start)
     if schedule['type'] == 'monthly':
         pass
     if schedule['type'] == 'interval':
@@ -45,6 +45,11 @@ def dates_from_sechedule(event, max_date=END_DATE.isoformat()):
     else:
         pass  # throw error?
 
+def date_to_string(d):
+    return d.strftime('%Y-%m-%d')
+
+def string_to_date(s):
+    return datetime.strptime(s, '%Y-%m-%d')
 
 def read_input():
     return json.load(sys.stdin)
