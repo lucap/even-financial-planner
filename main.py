@@ -13,32 +13,38 @@ def run():
     #print input_data
 
     # create data structures to hold every day of the year
-    days = []
-    date_map = {}
+    events = []
+    event_map = {}
 
     for i, d in daterange(START_DATE, END_DATE):
-        days.append({
+        events.append({
+            'index': i,
             'date': d,
             'expenses': [],
             'incomes': [],
         })
-        date_map[d] = i
+        event_map[d] = i
 
-    #print date_map
+    #print event_map
 
     for income in input_data['incomes']:
         dates = dates_from_sechedule(income)
         for d in dates:
-            days[date_map[d]]['incomes'].append(income)
+            events[event_map[d]]['incomes'].append(income)
 
     for expense in input_data['expenses']:
         dates = dates_from_sechedule(expense)
         for d in dates:
-            days[date_map[d]]['expenses'].append(expense)
+            events[event_map[d]]['expenses'].append(expense)
 
-    for d in days:
+    c = 0
+    for d in events:
         if d['expenses'] or d['incomes']:
             print d
+        if d['incomes']:
+            c += 1
+
+    print c
 
 
 def dates_from_sechedule(event):
