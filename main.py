@@ -112,6 +112,7 @@ def is_solvent(vectors):
         solvent = (income_pool - expense_pool >= 0)
         i += 1
 
+    print income_pool, expense_pool, income_pool - expense_pool
     return solvent
 
 def date_to_string(d):
