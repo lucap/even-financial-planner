@@ -40,12 +40,45 @@ def run():
     c = 0
     for d in events:
         if d['expenses'] or d['incomes']:
-            print d
+            pass
+            #print d
         if d['incomes']:
             c += 1
 
-    print c
+    #print c
 
+    # this is the data structure we're going to optimize
+    # each row represents a day in the year where an income occurs
+    # columns: date - spendable - incomes - expenses until next income
+    income_vector = []
+    for i, event in enumerate(events):
+        if event['incomes']:
+            income_total = 0
+            for income in event['incomes']:
+                income_total += income['amount']
+
+            j = i
+            expense_total = 0
+            while True:
+                if events[j]['expenses']:
+                    for expense in events[j]['expenses']:
+                        expense_total += expense['amount']
+                j += 1
+
+                if j >= len(events) or events[j]['incomes']:
+                    break
+
+            income_vector.append([
+                event['date'],
+                0,
+                income_total,
+                expense_total
+            ])
+
+    for i in  income_vector:
+        print i
+
+    print is_solvent(income_vector)
 
 def dates_from_sechedule(event):
     dates = []
@@ -67,6 +100,19 @@ def dates_from_sechedule(event):
         pass  # throw error?
 
     return dates
+
+def is_solvent(vectors):
+    solvent = True
+    i = 0
+    income_pool = 0
+    expense_pool = 0
+    while solvent and i < len(vectors):
+        income_pool += (vectors[i][2] - vectors[i][1])
+        expense_pool += vectors[i][3]
+        solvent = (income_pool - expense_pool >= 0)
+        i += 1
+
+    return solvent
 
 def date_to_string(d):
     return d.strftime('%Y-%m-%d')
